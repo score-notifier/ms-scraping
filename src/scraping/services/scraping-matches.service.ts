@@ -27,12 +27,14 @@ export class ScrapingMatchesService {
       const { browser } = await this.scrapingService.initializeBrowser();
 
       for (const league of leagues) {
-        // Need to implement scrolling strategy if I want to get all the matches
-        // right now it is only taking the first page of the infinite scroll.
-        //
-        //
-        // Additionally, these two methods are almost identical, so they could be refactored into one,
+        // TODO:
+        // These two methods are almost identical, so they could be refactored into one,
         // but I am keeping them separate for now to make it easier to understand
+        //
+        // Additionally, sometimes the teams scraping service is not finding the table,
+        // looks like the league webpage does not load the table properly sometimes.
+        // I could get the teams from the matches page for leagues without tables, however,
+        // I will leave it as is for now and try to fix it later if I have time.
         await Promise.all([
           this.scrapeFixtures(league, browser),
           this.scrapeResults(league, browser),

@@ -35,6 +35,10 @@ export class ScrapingTeamsService {
         const page = await browser.newPage();
         await page.goto(tableURL, { waitUntil: 'networkidle2' });
 
+        // TODO:
+        // Sometimes the table is not loaded properly, I am not sure why
+        // an alternative is to scrap the matches and there we can get the teams of a league
+        // I will try to fix it on the matches scraping service if I have time
         const leagueTeams: CreateTeamDto[] = await page.evaluate(() => {
           const teams = [];
           const table = document.getElementById('league-table');
