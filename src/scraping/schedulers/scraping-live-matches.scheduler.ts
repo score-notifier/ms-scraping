@@ -13,7 +13,7 @@ export class ScrapingLiveMatchesScheduler implements OnModuleInit {
     // await this.scrapingLiveMatchesService.scrapeLiveMatches();
   }
 
-  @Interval(20 * 1000)
+  @Interval(60 * 1000) // 1 minute
   async handleCron() {
     // await this.scrapingLiveMatchesService.scrapeLiveMatches();
   }
