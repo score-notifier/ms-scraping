@@ -2,7 +2,7 @@ import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { NATS_SERVICE } from 'src/config';
 
-import { CreateTeamDto } from './dto';
+import { CreateTeamDto } from '../dto';
 
 import { ScrapingService } from './scraping.service';
 import { firstValueFrom } from 'rxjs';
@@ -27,7 +27,7 @@ export class ScrapingTeamsService {
       const { browser } = await this.scrapingService.initializeBrowser();
 
       for (const league of leagues) {
-        const tableURL = `${ScrapingService.baseURL}${league.url}table`;
+        const tableURL = `${ScrapingService.baseURL}${league.liveScoreURL}table`;
         this.logger.debug(
           `Scraping teams for league: ${league.name}, URL: ${tableURL}`,
         );

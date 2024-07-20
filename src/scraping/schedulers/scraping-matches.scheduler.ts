@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 
-import { ScrapingMatchesService } from '../scraping-matches.service';
+import { ScrapingMatchesService } from '../services';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
@@ -15,6 +15,6 @@ export class ScrapingMatchesScheduler implements OnModuleInit {
 
   @Cron(CronExpression.EVERY_30_MINUTES)
   async handleCron() {
-    await this.scrapingMatchesService.scrapeMatches();
+    // await this.scrapingMatchesService.scrapeMatches();
   }
 }

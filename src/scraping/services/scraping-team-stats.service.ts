@@ -4,7 +4,7 @@ import { NATS_SERVICE } from 'src/config';
 
 import { ScrapingService } from './scraping.service';
 import { firstValueFrom } from 'rxjs';
-import { UpdateTeamStatsDto } from './dto';
+import { UpdateTeamStatsDto } from '../dto';
 
 @Injectable()
 export class ScrapingTeamStatsService {

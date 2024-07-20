@@ -2,9 +2,9 @@ import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { NATS_SERVICE } from 'src/config';
 
-import { CreateLeagueDto } from './dto';
+import { CreateLeagueDto } from '../dto';
 
-import { sleep } from './helpers';
+import { sleep } from '../helpers';
 import { ScrapingService } from './scraping.service';
 
 @Injectable()
@@ -38,11 +38,11 @@ export class ScrapingLeaguesService {
             const attributes = href.split('/');
             const country = attributes[3];
             const name = attributes[4];
-            const url = href;
+            const liveScoreURL = href;
 
             createLeagueDtoList.push({
               name,
-              url,
+              liveScoreURL,
               country,
             });
           });
@@ -55,7 +55,8 @@ export class ScrapingLeaguesService {
         // Scroll down by 1000 pixels
         previousHeight = currentHeight;
         await page.evaluate('window.scrollBy(0, 1000)');
-        await sleep(1500);
+
+        await sleep(1500); // Wait for new elements to load
 
         currentHeight = (await page.evaluate(
           'window.scrollY + window.innerHeight',

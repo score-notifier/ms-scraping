@@ -1,17 +1,23 @@
 import { Module } from '@nestjs/common';
 import { NatsModule } from 'src/transports/nats.module';
-import { ScrapingService } from './scraping.service';
 import { ScheduleModule } from '@nestjs/schedule';
+
 import {
   ScrapingLeaguesScheduler,
   ScrapingMatchesScheduler,
   ScrapingTeamsScheduler,
   ScrapingTeamStatsScheduler,
+  ScrapingLiveMatchesScheduler,
 } from './schedulers';
-import { ScrapingMatchesService } from './scraping-matches.service';
-import { ScrapingLeaguesService } from './scraping-leagues.service';
-import { ScrapingTeamsService } from './scraping-teams.service';
-import { ScrapingTeamStatsService } from './scraping-team-stats.service';
+
+import {
+  ScrapingService,
+  ScrapingLiveMatchesService,
+  ScrapingTeamStatsService,
+  ScrapingTeamsService,
+  ScrapingMatchesService,
+  ScrapingLeaguesService,
+} from './services';
 
 @Module({
   providers: [
@@ -20,10 +26,12 @@ import { ScrapingTeamStatsService } from './scraping-team-stats.service';
     ScrapingMatchesService,
     ScrapingTeamsService,
     ScrapingTeamStatsService,
+    ScrapingLiveMatchesService,
     ScrapingTeamsScheduler,
     ScrapingMatchesScheduler,
     ScrapingLeaguesScheduler,
     ScrapingTeamStatsScheduler,
+    ScrapingLiveMatchesScheduler,
   ],
   imports: [NatsModule, ScheduleModule.forRoot()],
 })

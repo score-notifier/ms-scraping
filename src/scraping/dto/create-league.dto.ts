@@ -5,7 +5,7 @@ export class CreateLeagueDto {
   name: string;
 
   @IsString()
-  url: string;
+  liveScoreURL: string;
 
   @IsString()
   country: string;
