@@ -1,11 +1,10 @@
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { NATS_SERVICE } from 'src/config';
-
 import { CreateLeagueDto } from '../dto';
-
-import { sleep } from '../helpers';
 import { ScrapingService } from './scraping.service';
+import { firstValueFrom } from 'rxjs';
+import { sleep } from '../helpers';
 
 @Injectable()
 export class ScrapingLeaguesService {
@@ -22,11 +21,11 @@ export class ScrapingLeaguesService {
 
       const { page, browser } = await this.scrapingService.initializeBrowser();
 
-      let previousHeight = 0;
-      let currentHeight = 0;
-      let newElementsFound = true;
+      let previousDataIndex = 0;
+      let counter = 0;
+      const threshold = 2;
 
-      while (newElementsFound) {
+      while (true) {
         const newLeagues = await page.evaluate(() => {
           const elements = document.querySelectorAll(
             'a[id*="category-header__link"]',
@@ -50,29 +49,58 @@ export class ScrapingLeaguesService {
           return createLeagueDtoList;
         });
 
-        this.client.emit('competitions.leagues.create', newLeagues);
+        this.logger.debug(`New leagues found: ${newLeagues.length}`);
 
-        // Scroll down by 1000 pixels
-        previousHeight = currentHeight;
+        await firstValueFrom(
+          this.client.send<void>('competitions.leagues.create', newLeagues),
+        );
+
         await page.evaluate('window.scrollBy(0, 1000)');
 
-        await sleep(1500); // Wait for new elements to load
+        // Wait for elements to load
+        await sleep(500);
 
-        currentHeight = (await page.evaluate(
-          'window.scrollY + window.innerHeight',
-        )) as number;
+        // Get the last element's data-index attribute in the virtual list
+        const currentDataIndex = await page.evaluate(() => {
+          const elements = document.querySelectorAll('div[data-index]');
+          const lastElement = elements[elements.length - 1];
+          return lastElement
+            ? Number(lastElement.getAttribute('data-index'))
+            : null;
+        });
 
-        // Check if new elements were loaded
-        newElementsFound = currentHeight > previousHeight;
+        // A little bit of logic to break the loop if the same data-index is found multiple times
+        // I couldn't find a better way to detect the end of the list and get all the leagues.
+        // Might be better to use a different approach to scrape the leagues.
+        if (currentDataIndex) {
+          if (currentDataIndex === previousDataIndex) {
+            counter++;
+          } else {
+            counter = 0;
+          }
+
+          if (currentDataIndex !== 0 && counter > threshold) {
+            console.log(
+              `Current Data Index: ${currentDataIndex}, Counter: ${counter}. Threshold reached. Exiting loop.`,
+            );
+            break;
+          }
+
+          previousDataIndex = currentDataIndex;
+        }
+
+        console.log('Current Data Index:', currentDataIndex);
+        console.log('Counter:', counter);
       }
 
       await browser.close();
 
       this.logger.debug('Finished scraping process for leagues');
     } catch (error) {
+      this.logger.error('Error scraping league data', error);
       throw new RpcException({
         status: error.status || HttpStatus.BAD_REQUEST,
-        message: error.message || 'Error scraping team data',
+        message: error.message || 'Error scraping league data',
       });
     }
   }

@@ -6,6 +6,8 @@ interface EnvVars {
   PORT: number;
   NATS_SERVERS: string[];
   PUPPETEER_EXECUTABLE_PATH: string;
+  REDIS_HOST: string;
+  REDIS_PORT: number;
 }
 
 const envsSchema = joi
@@ -14,6 +16,8 @@ const envsSchema = joi
     NATS_SERVERS: joi.array().items(joi.string()).required(),
     PUPPETEER_EXECUTABLE_PATH: joi.string(),
     // .required(),
+    REDIS_HOST: joi.string().required(),
+    REDIS_PORT: joi.number().required(),
   })
   .unknown(true);
 
@@ -32,4 +36,6 @@ export const envs = {
   port: envVars.PORT,
   natsServers: envVars.NATS_SERVERS,
   puppeteerExecutablePath: envVars.PUPPETEER_EXECUTABLE_PATH,
+  redisHost: envVars.REDIS_HOST,
+  redisPort: envVars.REDIS_PORT,
 };

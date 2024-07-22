@@ -115,7 +115,7 @@ export class ScrapingMatchesService {
       previousHeight = currentHeight;
       await page.evaluate('window.scrollBy(0, 1000)');
 
-      await sleep(1000); // Wait for new elements to load
+      await sleep(800); // Wait for new elements to load
 
       currentHeight = (await page.evaluate(
         'window.scrollY + window.innerHeight',
