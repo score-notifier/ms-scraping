@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
+import { envs } from 'src/config';
 
 @Injectable()
 export class ScrapingService {
@@ -9,7 +10,8 @@ export class ScrapingService {
   async initializeBrowser() {
     this.logger.debug('Initialize Browser');
     const browser = await puppeteer.launch({
-      headless: true,
+      executablePath: envs.puppeteerExecutablePath,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });

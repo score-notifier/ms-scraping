@@ -14,8 +14,7 @@ const envsSchema = joi
   .object({
     PORT: joi.number().required(),
     NATS_SERVERS: joi.array().items(joi.string()).required(),
-    PUPPETEER_EXECUTABLE_PATH: joi.string(),
-    // .required(),
+    PUPPETEER_EXECUTABLE_PATH: joi.string().required(),
     REDIS_HOST: joi.string().required(),
     REDIS_PORT: joi.number().required(),
   })
