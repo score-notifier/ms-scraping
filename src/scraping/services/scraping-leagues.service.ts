@@ -80,7 +80,7 @@ export class ScrapingLeaguesService {
           }
 
           if (currentDataIndex !== 0 && counter > threshold) {
-            console.log(
+            this.logger.debug(
               `Current Data Index: ${currentDataIndex}, Counter: ${counter}. Threshold reached. Exiting loop.`,
             );
             break;
@@ -88,9 +88,6 @@ export class ScrapingLeaguesService {
 
           previousDataIndex = currentDataIndex;
         }
-
-        console.log('Current Data Index:', currentDataIndex);
-        console.log('Counter:', counter);
       }
 
       await browser.close();

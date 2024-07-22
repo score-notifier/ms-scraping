@@ -24,7 +24,7 @@ export class ScrapingTeamsService {
       const leagues = await this.fetchLeagues();
       const { browser } = await this.scrapingService.initializeBrowser();
 
-      const limit = pLimit(5);
+      const limit = pLimit(3);
       const scrapingPromises = leagues.map((league) =>
         limit(() => this.scrapeLeagueTeams(browser, league)),
       );

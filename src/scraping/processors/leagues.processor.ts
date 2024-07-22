@@ -1,4 +1,9 @@
-import { Processor, Process, InjectQueue } from '@nestjs/bull';
+import {
+  Processor,
+  Process,
+  OnQueueCompleted,
+  InjectQueue,
+} from '@nestjs/bull';
 import { Job, Queue } from 'bull';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ScrapingLeaguesService } from '../services';
@@ -29,20 +34,8 @@ export class LeaguesProcessor {
     try {
       await this.scrapingLeaguesService.scrapeLeagues();
 
-      await this.cleanAllQueues();
-
       this.logger.debug(
-        `Teams queue cleared before processing job ID: ${job.id}`,
-      );
-
-      this.logger.debug(
-        `Scrape leagues completed for job ID: ${job.id}, initiating job to scrape teams at ${new Date().toISOString()}`,
-      );
-
-      const teamsJob = await this.teamsQueue.add(JOB.SCRAPE_TEAMS, {});
-
-      this.logger.debug(
-        `New job to scrape teams added with ID: ${teamsJob.id}`,
+        `Scrape leagues completed for job ID: ${job.id} at ${new Date().toISOString()}`,
       );
     } catch (error) {
       this.logger.error(
@@ -61,15 +54,14 @@ export class LeaguesProcessor {
     }
   }
 
-  async cleanAllQueues() {
-    await Promise.all([
-      this.teamsQueue.clean(0, 'completed'),
-      this.teamsQueue.clean(0, 'wait'),
-      this.teamsQueue.clean(0, 'active'),
-      this.teamsQueue.clean(0, 'delayed'),
-      this.teamsQueue.clean(0, 'failed'),
-    ]);
+  @OnQueueCompleted()
+  async handleQueueCompleted(job: Job): Promise<void> {
+    this.logger.debug(`Leagues job with ID ${job.id} completed`);
+    await this.scrapeTeams();
+  }
 
-    this.logger.debug('All queues have been cleaned');
+  private async scrapeTeams(): Promise<void> {
+    const job = await this.teamsQueue.add(JOB.SCRAPE_TEAMS, {});
+    this.logger.debug(`Teams job added with ID: ${job.id}`);
   }
 }

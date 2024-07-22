@@ -107,7 +107,7 @@ export class ScrapingMatchesService {
         match.UTCDate = formatDate(match.date, match.time);
       });
 
-      this.logger.log(`Found ${leagueMatches.length} fixtures matches`);
+      this.logger.debug(`Found ${leagueMatches.length} fixtures matches`);
 
       this.client.emit('competitions.matches.create', leagueMatches);
 
@@ -195,7 +195,7 @@ export class ScrapingMatchesService {
         match.UTCDate = formatDate(match.date, match.time);
       });
 
-      this.logger.log(`Found ${leagueMatches.length} results matches`);
+      this.logger.debug(`Found ${leagueMatches.length} results matches`);
 
       this.client.emit('competitions.matches.create', leagueMatches);
 

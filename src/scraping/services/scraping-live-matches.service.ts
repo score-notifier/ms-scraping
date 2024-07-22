@@ -5,7 +5,7 @@ import { ScrapingService } from './scraping.service';
 import * as puppeteer from 'puppeteer';
 import { sleep } from '../helpers';
 import { CreateNotificationDto, EventDto } from '../dto';
-import { EventType } from '../enums/event-type.enum';
+import { EventType } from '../enums';
 
 @Injectable()
 export class ScrapingLiveMatchesService {
@@ -196,16 +196,9 @@ export class ScrapingLiveMatchesService {
         (event) => !this.isEventSeen(event, lastEvents),
       );
 
-      this.logger.debug('Scraping match events', {
-        lastEventsLength: lastEvents.length,
-        newEventsLength: newEvents.length,
-        newEvents,
-        matchLink,
-        currentEvents,
-        homeTeamLink,
-        awayTeamLink,
-        leagueLink,
-      });
+      this.logger.debug(
+        `Scraping match lastEvents ${lastEvents.length} - newEvents ${newEvents.length} `,
+      );
 
       for (const event of newEvents) {
         const notificationDto: CreateNotificationDto = {

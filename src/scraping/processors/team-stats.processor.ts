@@ -16,19 +16,19 @@ export class TeamStatsProcessor {
 
   @Process({
     concurrency: 1,
-    name: JOB.SCRAPE_MATCHES,
+    name: JOB.SCRAPE_TEAM_STATS,
   })
   async handleLiveMatches(job: Job) {
     const startTime = Date.now();
 
-    this.logger.warn(
+    this.logger.debug(
       `Processing job ID: ${job.id} - Data: ${JSON.stringify(job.data)} at ${new Date(startTime).toISOString()}`,
     );
 
     try {
       await this.scrapingTeamStatsService.scrapeTeamStats();
 
-      this.logger.warn(
+      this.logger.debug(
         `Scrape team stats completed for job ID: ${job.id} at ${new Date().toISOString()}`,
       );
     } catch (error) {

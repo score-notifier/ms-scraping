@@ -26,7 +26,7 @@ export class ScrapingTeamStatsService {
       const { browser } = await this.scrapingService.initializeBrowser();
 
       for (const league of leagues) {
-        const tableURL = `${ScrapingService.baseURL}${league.url}table`;
+        const tableURL = `${ScrapingService.baseURL}${league.liveScoreURL}table`;
         this.logger.debug(
           `Scraping team stats for league: ${league.name}, URL: ${tableURL}`,
         );
@@ -109,7 +109,7 @@ export class ScrapingTeamStatsService {
           team.leagueId = league.id;
         });
 
-        this.logger.debug('Team stats', teamStats);
+        this.logger.debug('Team stats found', teamStats.length);
 
         this.client.emit('stats.update.team', teamStats);
 

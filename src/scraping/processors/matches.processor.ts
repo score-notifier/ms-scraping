@@ -21,14 +21,14 @@ export class MatchesProcessor {
   async handleMatches(job: Job) {
     const startTime = Date.now();
 
-    this.logger.warn(
+    this.logger.debug(
       `Processing job ID: ${job.id} - Data: ${JSON.stringify(job.data)} at ${new Date(startTime).toISOString()}`,
     );
 
     try {
       await this.scrapingMatchesService.scrapeMatches();
 
-      this.logger.warn(
+      this.logger.debug(
         `Scrape matches completed for job ID: ${job.id} at ${new Date().toISOString()}`,
       );
     } catch (error) {

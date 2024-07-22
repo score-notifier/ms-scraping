@@ -1,8 +1,8 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { JOB, QUEUE } from '../../queue';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class ScrapingLeaguesScheduler implements OnModuleInit {
@@ -20,7 +20,7 @@ export class ScrapingLeaguesScheduler implements OnModuleInit {
     await this.scrapeLeagues();
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_MINUTE)
   async handleCron(): Promise<void> {
     this.logger.debug('Initializing scraping leagues job with cron');
     await this.scrapeLeagues();

@@ -4,8 +4,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 
 import {
   ScrapingLeaguesScheduler,
-  ScrapingMatchesScheduler,
-  ScrapingTeamStatsScheduler,
   ScrapingLiveMatchesScheduler,
 } from './schedulers';
 
@@ -18,7 +16,14 @@ import {
   ScrapingLeaguesService,
 } from './services';
 
-import { LeaguesProcessor, TeamsProcessor } from './processors';
+import {
+  LeaguesProcessor,
+  TeamsProcessor,
+  LiveMatchesProcessor,
+  MatchesProcessor,
+  TeamStatsProcessor,
+} from './processors';
+
 import { QueueModule } from '../queue/queue.module';
 
 @Module({
@@ -29,12 +34,13 @@ import { QueueModule } from '../queue/queue.module';
     ScrapingTeamsService,
     ScrapingTeamStatsService,
     ScrapingLiveMatchesService,
-    ScrapingMatchesScheduler,
     ScrapingLeaguesScheduler,
-    ScrapingTeamStatsScheduler,
     ScrapingLiveMatchesScheduler,
     LeaguesProcessor,
     TeamsProcessor,
+    LiveMatchesProcessor,
+    MatchesProcessor,
+    TeamStatsProcessor,
   ],
   imports: [NatsModule, QueueModule, ScheduleModule.forRoot()],
 })
